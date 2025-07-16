@@ -9,7 +9,5 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
-      nodePort: {{ .Values.nodePort | default 30080 }}
-  type: NodePort
   selector:
     app: my-nginx-app
