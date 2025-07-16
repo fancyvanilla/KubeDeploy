@@ -18,7 +18,7 @@ jobs:
       run: |
         $env:KUBECONFIG_CONTENT | Out-File -FilePath kubeconfig -Encoding utf8
         echo "KUBECONFIG=$PWD/kubeconfig" >> $env:GITHUB_ENV
-      shell: pwsh
+      shell: powershell
 
     - name: Helm lint
       run: helm lint ./my-app
@@ -29,4 +29,4 @@ jobs:
 
     - name: Notify deployment
       run: echo "✅ Deployment completed successfully!"
-      shell: pwsh
+      shell: powershell
