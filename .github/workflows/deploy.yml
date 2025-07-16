@@ -1,0 +1,32 @@
+name: Deploy to Kubernetes
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set kubeconfig from secret
+      env:
+        KUBECONFIG_CONTENT: ${{ secrets.KUBECONFIG_CONTENT }}
+      run: |
+        $env:KUBECONFIG_CONTENT | Out-File -FilePath kubeconfig -Encoding utf8
+        echo "KUBECONFIG=$PWD/kubeconfig" >> $env:GITHUB_ENV
+      shell: pwsh
+
+    - name: Helm lint
+      run: helm lint ./my-app
+
+    - name: Deploy app
+      run: |
+        helm upgrade --install myapp ./my-app --wait
+
+    - name: Notify deployment
+      run: echo "✅ Deployment completed successfully!"
+      shell: pwsh
