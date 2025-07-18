@@ -17,6 +17,7 @@ jobs:
 
     - name: Install dependencies
       run: go mod download
+      continue-on-error: true
 
     - name: Run tests
       run:  cd server && go test
