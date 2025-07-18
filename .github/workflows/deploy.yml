@@ -51,7 +51,7 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         push: true
-        tags: dev/go-server:v1
+        tags: fancyvanilla/kube-dev:v1
         context: "{{defaultContext}}:server"
 
   deploy:
