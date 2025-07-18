@@ -1,24 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-nginx-app
+  name: my-app
   labels:
-    app: my-nginx-app
+    app: my-app
 spec:
   replicas: {{ .Values.replicaCount | default 2 }}
   selector:
     matchLabels:
-      app: my-nginx-app
+      app: my-app
   template:
     metadata:
       labels:
-        app: my-nginx-app
+        app: my-app
     spec:
       containers:
-      - name: nginx
-        image: nginx:latest
+      - name: my-app-container
+        image: {{ .Values.image.repository | default "nginx" }}:{{ .Values.image.tag | default "latest" }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
         ports:
-        - containerPort: 80
+        - containerPort: {{ .Values.containerPort | default 80 }}
         resources:
           requests:
             memory: "64Mi"
