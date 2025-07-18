@@ -4,7 +4,7 @@ on:
     branches: [ master ]
 
 jobs:
-  test:
+  test-and-scan:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -30,6 +30,14 @@ jobs:
       run: |
         cd server
         go test
+        
+    - name: Scan for vulnerabilities
+      uses: aquasecurity/trivy-action@0.28.0
+      with:
+        scan-type: fs
+        scan-ref: ./server
+        severity: CRITICAL,HIGH
+        ignore-unfixed: true
 
   build:
     runs-on: ubuntu-latest
