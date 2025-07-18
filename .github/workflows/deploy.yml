@@ -20,7 +20,7 @@ jobs:
         cd server
         go mod init myserver
         go mod tidy
-        
+
     - name: Install dependencies
       run: |
         cd server
@@ -52,7 +52,7 @@ jobs:
       with:
         push: true
         tags: dev/go-server:v1
-        context: ./server
+        context: "{{defaultContext}}:server"
 
   deploy:
     needs: build
