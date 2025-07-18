@@ -71,8 +71,8 @@ jobs:
       shell: powershell
 
     - name: Helm lint
-      run: helm lint ./my-app
+      run: helm lint ./helm
 
     - name: Deploy app
       run: |
-        helm upgrade --install myapp ./my-app --wait
+        helm upgrade --install myapp ./helm --wait
