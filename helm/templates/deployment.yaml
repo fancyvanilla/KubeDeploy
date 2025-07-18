@@ -19,4 +19,4 @@ spec:
         image: {{ .Values.image.repository | default "nginx" }}:{{ .Values.image.tag | default "latest" }}
         imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
         ports:
-        - containerPort: {{ .Values.containerPort | default 80 }}
+        - containerPort: {{ .Values.image.port | default 80 }}
