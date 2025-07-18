@@ -19,9 +19,17 @@ jobs:
       run: go mod download
       continue-on-error: true
 
-    - name: Run tests
-      run:  cd server && go test
+    - name: Initialize Go modules
+      run: |
+        cd server
+        go mod init myserver
+        go mod tidy
 
+    - name: Run tests
+      run: |
+        cd server
+        go test
+        
   build:
     runs-on: ubuntu-latest
     needs: test
