@@ -75,4 +75,4 @@ jobs:
 
     - name: Deploy app
       run: |
-        helm upgrade --install myapp ./helm --wait
+        helm upgrade --install myapp ./helm
