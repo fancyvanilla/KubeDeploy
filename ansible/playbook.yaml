@@ -1,9 +1,26 @@
-- name: My first play
+- name: Get ressource information
   hosts: k8s_nodes
   tasks:
-  - name : Ping my hosts
-    ansible.builtin.ping:
+  - name : get ram
+    ansible.builtin.shell: free -m
+    register: ram_info
 
-  - name: hello world
+  - name: Print RAM information
     ansible.builtin.debug:
-      msg: Hello, world!
+      msg: "RAM Information: {{ ram_info.stdout }}"
+
+  - name: get disk space
+    ansible.builtin.shell: df -h
+    register: disk_info
+
+  - name: Print disk space information
+    ansible.builtin.debug:
+      msg: "Disk Space Information: {{ disk_info.stdout }}"
+      
+  - name: get cpu info
+    ansible.builtin.shell: lscpu
+    register: cpu_info
+
+  - name: Print CPU information
+    ansible.builtin.debug:
+      msg: "CPU Information: {{ cpu_info.stdout }}"
