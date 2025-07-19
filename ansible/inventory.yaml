@@ -3,6 +3,8 @@ k8s_nodes:
     control_node:
       ansible_host: 192.168.19.23
       ansible_port: 2222
+      ansible_user: cloud
     node:
       ansible_host: 192.168.19.23
       ansible_port: 2223
+      ansible_user: cloud
