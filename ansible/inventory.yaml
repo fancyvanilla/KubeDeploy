@@ -2,7 +2,7 @@ k8s_nodes:
   hosts:
     control_node:
       ansible_host: 192.168.19.23
-      http_port: 2222
+      ansible_port: 2222
     node:
       ansible_host: 192.168.19.23
-      http_port: 2223
+      ansible_port: 2223
