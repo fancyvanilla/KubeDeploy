@@ -2,7 +2,7 @@
   hosts: k8s_nodes
   tasks:
   - name : Ping my hosts
-    ansible.builitn.ping:
+    ansible.builtin.ping:
   - name: Print the host IP
     ansible.builtin.debug:
       msg: "The host IP is {{ ansible_host }} and the HTTP port is {{ http_port }}"
