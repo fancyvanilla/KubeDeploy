@@ -1,0 +1,5 @@
+[masters]
+master ansible_host=192.168.19.24
+[workers]
+[all:vars]
+ansible_user=ubuntu
