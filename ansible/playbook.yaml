@@ -1,5 +1,5 @@
 ---
-- name: Prepare Ubuntu control node for Kubernetes
+- name: Setup k8s on control node
   hosts: masters
   become: true
   tasks:
@@ -82,12 +82,11 @@
         state: present
 
     - name: Hold Kubernetes packages
-      apt:
-        name:
-          - kubelet
-          - kubeadm
-          - kubectl
-        state: hold
+      shell: |
+        apt-mark hold kubelet kubeadm kubectl
+      changed_when: false
+      become: true
+      tags: [hold]
 
     - name: Add Docker apt key
       shell: |
@@ -117,4 +116,87 @@
       shell: containerd config default | tee /etc/containerd/config.toml
       args:
         creates: /etc/containerd/config.toml
+
+    - name: Ensure containerd config has correct runc runtime settings
+      blockinfile:
+        path: /etc/containerd/config.toml
+        marker: "# {mark} ANSIBLE-MANAGED RUNC CONFIG"
+        block: |
+          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+            runtime_type = "io.containerd.runc.v2"
+            [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+          SystemdCgroup = true
+        become: yes
+        tags: [runc]
+
+    - name: Restart containerd service
+      service:
+        name: containerd
+        state: restarted
+        enabled: true
+
+    - name: Ensure containerd service is running
+      service:
+        name: containerd
+        state: started
+        enabled: true
+
+    - name: Modify crictl config file
+      copy:
+        dest: /etc/crictl.yaml
+        content: |
+          runtime-endpoint: unix:///run/containerd/containerd.sock
+          image-endpoint: unix:///run/containerd/containerd.sock
+          timeout: 2
+          debug: false
+          pull-image-on-create: false 
+        become: true
+
+    - name: Enable kubelet service
+      systemd:
+        name: kubelet
+        enabled: true
+    
+    - name: Initialize Kubernetes cluster
+      command: kubeadm init --pod-network-cidr=10.244.0.0/16 --cri-socket unix:///var/run/containerd/containerd.sock --v=5
+      args:
+        creates: /etc/kubernetes/admin.conf
+
+    - name: Create .kube directory
+      file:
+        path: "{{ ansible_env.HOME }}/.kube"
+        state: directory
+        mode: '0755'
+
+    - name: Copy admin.conf to user's kube config
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /.kube/config
+        remote_src: yes
+
+    - name: Set ownership of kube config file to current user
+      file:
+        path: "{{ ansible_env.HOME }}/.kube/config"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0644'
+      
+    - name: Install Kubernetes network plugin (Weave Net)
+      command: kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+   
+    - name: Restart control plane server
+      service:
+        name: kubelet
+        state: restarted
+
+    - name: Wait until control plane node is Ready
+      shell: |
+        kubectl get nodes --no-headers | grep -E 'control-plane|master' | grep -w "Ready"
+      register: control_plane_status
+      retries: 30           
+      delay: 10           
+      until: control_plane_status.rc == 0
+      changed_when: false
+
+
 
