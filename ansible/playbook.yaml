@@ -118,6 +118,8 @@
         creates: /etc/containerd/config.toml
 
     - name: Ensure containerd config has correct runc runtime settings
+      become: true
+      tags: [runc]
       blockinfile:
         path: /etc/containerd/config.toml
         marker: "# {mark} ANSIBLE-MANAGED RUNC CONFIG"
@@ -126,8 +128,6 @@
             runtime_type = "io.containerd.runc.v2"
             [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
           SystemdCgroup = true
-        become: yes
-        tags: [runc]
 
     - name: Restart containerd service
       service:
