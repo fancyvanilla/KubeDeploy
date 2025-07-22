@@ -142,6 +142,7 @@
         enabled: true
 
     - name: Modify crictl config file
+      become: true
       copy:
         dest: /etc/crictl.yaml
         content: |
@@ -150,7 +151,6 @@
           timeout: 2
           debug: false
           pull-image-on-create: false 
-        become: true
 
     - name: Enable kubelet service
       systemd:
