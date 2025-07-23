@@ -1,6 +1,6 @@
 ---
-- name: Setup k8s on control node
-  hosts: masters
+- name: Setup k8s
+  hosts: all
   become: true
   tasks:
     - name: Update and upgrade system
@@ -48,8 +48,6 @@
           - apt-transport-https
           - ca-certificates
           - curl
-          - gpg
-          - gnupg2
           - software-properties-common
         state: present
 
@@ -115,19 +113,25 @@
     - name: Generate default containerd config
       shell: containerd config default | tee /etc/containerd/config.toml
       args:
-        creates: /etc/containerd/config.toml
+       creates: /etc/containerd/config.toml
 
-    - name: Ensure containerd config has correct runc runtime settings
+    - name: Ensure runc runtime_type is set correctly
       become: true
       tags: [runc]
-      blockinfile:
+      lineinfile:
         path: /etc/containerd/config.toml
-        marker: "# {mark} ANSIBLE-MANAGED RUNC CONFIG"
-        block: |
-          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
-            runtime_type = "io.containerd.runc.v2"
-            [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
-          SystemdCgroup = true
+        regexp: '^(\s*)runtime_type\s*=.*'
+        line: '            runtime_type = "io.containerd.runc.v2"'
+        insertafter: '^\[plugins\."io\.containerd\.grpc\.v1\.cri"\.containerd\.runtimes\.runc\]'
+
+    - name: Ensure SystemdCgroup is set to true
+      become: true
+      tags: [runc]
+      lineinfile:
+        path: /etc/containerd/config.toml
+        regexp: '^(\s*)SystemdCgroup\s*=.*'
+        line: '            SystemdCgroup = true'
+        insertafter: '^\[plugins\."io\.containerd\.grpc\.v1\.cri"\.containerd\.runtimes\.runc\.options\]'
 
     - name: Restart containerd service
       service:
@@ -155,7 +159,11 @@
       systemd:
         name: kubelet
         enabled: true
-    
+
+- name: Setup k8s on control node
+  hosts: masters
+  become: true
+  tasks:
     - name: Initialize Kubernetes cluster
       command: sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --cri-socket unix:///var/run/containerd/containerd.sock --v=5
       args:
@@ -196,6 +204,27 @@
       delay: 10           
       until: control_plane_status.rc == 0
       changed_when: false
+    
+    - name: copy join command to file
+      shell: kubeadm token create --print-join-command 
+      register: join_command
 
+    - name: save join command to file
+      copy:
+        local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
 
-
+- name: Add worker nodes to cluster
+  hosts: workers
+  become: true
+  tasks:
+    - name: Join worker node to Kubernetes cluster
+      become: true
+      block:
+        - name: copy join command to server
+          copy:
+            src: join-command
+            dest: /tmp/join-command.sh
+            mode: '0755'
+        - name: Execute join command
+          command: /tmp/join-command.sh
+     
