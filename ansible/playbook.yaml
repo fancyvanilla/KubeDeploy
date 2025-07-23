@@ -186,7 +186,7 @@
         dest: "{{ ansible_env.HOME }}/.kube/config"
         remote_src: yes
       become: true
-      tags: [kubeconfig]
+      tags: kubeconfig
 
     - name: Set ownership of kube config file to current user
       file:
