@@ -3,7 +3,7 @@
   hosts: all
   become: true
   tasks:
-    - name: Update and upgrade system
+    - name: Update system
       apt:
         update_cache: yes
         cache_valid_time: 3600
