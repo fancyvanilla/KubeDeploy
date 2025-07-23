@@ -111,7 +111,7 @@
         state: directory
 
     - name: Generate default containerd config
-      shell: containerd config default | tee /etc/containerd/config.toml
+      shell: containerd config default | sudo tee /etc/containerd/config.toml
       args:
        creates: /etc/containerd/config.toml
 
