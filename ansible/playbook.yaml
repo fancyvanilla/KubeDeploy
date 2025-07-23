@@ -183,7 +183,7 @@
     - name: Copy admin.conf to user's kube config
       copy:
         src: /etc/kubernetes/admin.conf
-        dest: "{{ ansible_env.HOME }}/.kube/config"
+        dest: "/home/{{ ansible_user }}/.kube/config" 
         remote_src: yes
       become: true
       tags: kubeconfig
