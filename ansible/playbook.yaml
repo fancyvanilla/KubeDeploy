@@ -133,14 +133,16 @@
       service:
         name: containerd
         state: restarted
-        enabled: true
 
     - name: Ensure containerd service is running
       service:
         name: containerd
-        state: started
         enabled: true
-
+    - name: print containerd stattus 
+      shell: systemctl status containerd
+      register: status
+      print: status.outputt
+        
     - name: Modify crictl config file
       become: true
       copy:
@@ -159,7 +161,7 @@
         enabled: true
     
     - name: Initialize Kubernetes cluster
-      command: kubeadm init --pod-network-cidr=10.244.0.0/16 --cri-socket unix:///var/run/containerd/containerd.sock --v=5
+      command: sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --cri-socket unix:///var/run/containerd/containerd.sock --v=5
       args:
         creates: /etc/kubernetes/admin.conf
 
