@@ -83,4 +83,4 @@ jobs:
 
     - name: Deploy app
       run: |
-        helm upgrade --install myapp ./helm
+        helm upgrade --install myapp ./helm --namespace web-server --create-namespace
