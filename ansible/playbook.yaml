@@ -170,7 +170,7 @@
     - name: Copy admin.conf to user's kube config
       copy:
         src: /etc/kubernetes/admin.conf
-        dest: /.kube/config
+        dest: "{{ ansible_env.HOME }}/.kube/config"
         remote_src: yes
 
     - name: Set ownership of kube config file to current user
