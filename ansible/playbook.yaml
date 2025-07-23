@@ -104,7 +104,7 @@
         name: containerd.io
         update_cache: yes
         state: present
-        
+
     - name: Remove old containerd config
       file:
        path: /etc/containerd/config.toml
@@ -185,6 +185,8 @@
         src: /etc/kubernetes/admin.conf
         dest: "{{ ansible_env.HOME }}/.kube/config"
         remote_src: yes
+      become: true
+      tags: [kubeconfig]
 
     - name: Set ownership of kube config file to current user
       file:
