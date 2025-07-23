@@ -138,10 +138,6 @@
       service:
         name: containerd
         enabled: true
-    - name: print containerd stattus 
-      shell: systemctl status containerd
-      register: status
-      print: status.outputt
         
     - name: Modify crictl config file
       become: true
