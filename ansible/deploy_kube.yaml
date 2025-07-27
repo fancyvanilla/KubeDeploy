@@ -186,6 +186,7 @@
         api_key: "{{ cloudstack_api_key }}"
         api_secret: "{{ cloudstack_api_secret }}"
         api_url: "{{ cloudstack_api_url }}"
+      become: false
 
     - name: add controller node to load balancer
       ngine_io.cloudstack.cs_loadbalancer_rule_member:
@@ -194,6 +195,7 @@
         api_key: "{{ cloudstack_api_key }}"
         api_secret: "{{ cloudstack_api_secret }}"
         api_url: "{{ cloudstack_api_url }}"
+      become: false
 
     - name: Initialize Kubernetes cluster
       command: kubeadm init --pod-network-cidr=10.244.0.0/16 --cri-socket unix:///var/run/containerd/containerd.sock --control-plane-endpoint=192.168.19.24:6443 --apiserver-advertise-address=192.168.19.24 --v=5
