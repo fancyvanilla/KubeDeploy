@@ -30,6 +30,7 @@
       --dry-run=client -o yaml | kubectl apply -f -
   args:
     executable: /bin/bash
+  become: true
 
 - name: Apply cloudstack CCM manifest
   command: kubectl apply -f /tmp/cloudstack-ccm.yaml
