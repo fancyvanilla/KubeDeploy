@@ -21,7 +21,7 @@
       secret-key = {{ cloudstack_api_secret }}
       zone = {{ cloudstack_zone }}
       network = {{ cloudstack_network }}
-    mode: '0600'
+    mode: '0644'
 
 - name: Create secret for cloud-config
   shell: |
@@ -30,7 +30,6 @@
       --dry-run=client -o yaml | kubectl apply -f -
   args:
     executable: /bin/bash
-  become: true
 
 - name: Apply cloudstack CCM manifest
   command: kubectl apply -f /tmp/cloudstack-ccm.yaml
