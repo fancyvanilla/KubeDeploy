@@ -180,7 +180,7 @@
       ansible.builtin.pip:
         name: cs
         executable: pip3
-        become: false
+      become: false
 
     - name: Add load balancer rule for the api server
       ngine_io.cloudstack.cs_loadbalancer_rule:
