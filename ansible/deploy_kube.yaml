@@ -192,7 +192,7 @@
 
     - name: Create .kube directory
       file:
-        path: "{{ ansible_env.HOME }}/.kube"
+        path: "/home/{{ ansible_user }}/.kube"
         state: directory
         mode: '0755'
 
@@ -227,6 +227,7 @@
       delay: 10           
       until: control_plane_status.rc == 0
       changed_when: false
+    - name: Set up cloudstack CCM
     
     - name: copy join command to file
       command: kubeadm token create --print-join-command
