@@ -176,6 +176,12 @@
     ansible_python_interpreter: /usr/bin/python3
   become: true
   tasks:
+    - name: Install cs Python module
+      ansible.builtin.pip:
+        name: cs
+        executable: pip3
+        become: false
+
     - name: Add load balancer rule for the api server
       ngine_io.cloudstack.cs_loadbalancer_rule:
         name: k8s-api-lb-rule
