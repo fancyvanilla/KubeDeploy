@@ -173,7 +173,7 @@
   become: true
   tasks:
     - name: Add load balancer rule for the api server
-      ngine_io.cloudstack.load_balancer_rule:
+      ngine_io.cloudstack.cs_loadbalancer_rule:
         name: k8s-api-lb-rule
         public_ip: "{{ virtual_router_ip }}"
         public_port: 6443
@@ -181,7 +181,7 @@
         algorithm: roundrobin
 
     - name: add controller node to load balancer
-      ngine_io.cloudstack.load_balancer_rule_member:
+      ngine_io.cloudstack.cs_loadbalancer_rule_member:
         name: k8s-api-lb-rule
         vms: "{{ control_plane_node }}"
 
