@@ -1,8 +1,7 @@
 [masters]
-master ansible_host=192.168.19.24 ansible_port=2222
+master ansible_host=192.168.19.24 ansible_port=2223
 
 [workers]
-worker1 ansible_host=192.168.19.24 ansible_port=2223
 worker2 ansible_host=192.168.19.24 ansible_port=2224
 
 [all:vars]
