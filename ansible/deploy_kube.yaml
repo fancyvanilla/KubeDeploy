@@ -227,7 +227,6 @@
       delay: 10           
       until: control_plane_status.rc == 0
       changed_when: false
-    - name: Set up cloudstack CCM
     
     - name: copy join command to file
       command: kubeadm token create --print-join-command
