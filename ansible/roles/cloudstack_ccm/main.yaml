@@ -1,0 +1,44 @@
+- name: cloudstack-ccm
+  hosts: masters
+  vars_files:
+    - vault.yml
+  vars:
+    cloudstack_zone: "Zone-1"
+    cloudstack_network: "k8s-network"
+  tasks:
+    - name: Download cloudstack CCM manifest
+      get_url:
+        url: https://raw.githubusercontent.com/apache/cloudstack-kubernetes-provider/main/deployment.yaml
+        dest: /tmp/cloudstack-ccm.yaml
+
+    - name: Ensure cloud-config directory exists
+      become: true
+      file:
+        path: /opt/cloudstack-ccm
+        state: directory
+        mode: '0755'
+    
+    - name: Generate cloud-config file
+      become: true
+      copy:
+        dest: /opt/cloudstack-ccm/cloud-config
+        content: |
+          [Global]
+          api-url = http://192.168.19.10/client/api
+          api-key = {{ cloudstack_api_key }}
+          secret-key = {{ cloudstack_secret }}
+          zone = {{ cloudstack_zone }}
+          network = {{ cloudstack_network }}
+        mode: '0600'
+
+    - name: Create secret for cloud-config
+      shell: |
+        kubectl -n kube-system create secret generic cloudstack-secret \
+          --from-file=cloud-config=/opt/cloudstack-ccm/cloud-config \
+          --dry-run=client -o yaml | kubectl apply -f -
+      args:
+        executable: /bin/bash
+
+    - name: Apply cloudstack CCM manifest
+      command: kubectl apply -f /tmp/cloudstack-ccm.yaml
+
