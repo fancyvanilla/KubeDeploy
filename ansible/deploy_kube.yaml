@@ -176,6 +176,12 @@
     ansible_python_interpreter: /usr/bin/python3
   become: true
   tasks:
+    - name: Ensure pip3 is installed
+      ansible.builtin.package:
+        name: python3-pip
+        state: present
+      become: true
+      
     - name: Install cs Python module
       ansible.builtin.pip:
         name: cs
