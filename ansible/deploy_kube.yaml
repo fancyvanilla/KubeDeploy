@@ -198,7 +198,7 @@
       become: false
 
     - name: Initialize Kubernetes cluster
-      command: kubeadm init --pod-network-cidr=10.244.0.0/16 --cri-socket unix:///var/run/containerd/containerd.sock --control-plane-endpoint=192.168.19.24:6443 --apiserver-cert-extra-sans=192.168.19.24  --v=5
+      command: kubeadm init --pod-network-cidr=10.32.0.0/12 --cri-socket unix:///var/run/containerd/containerd.sock --control-plane-endpoint=192.168.19.24:6443 --apiserver-cert-extra-sans=192.168.19.24  --v=5
       args:
         creates: /etc/kubernetes/admin.conf
 
