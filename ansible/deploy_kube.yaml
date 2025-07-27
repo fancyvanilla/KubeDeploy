@@ -181,7 +181,7 @@
         name: python3-pip
         state: present
       become: true
-      
+
     - name: Install cs Python module
       ansible.builtin.pip:
         name: cs
@@ -264,6 +264,7 @@
         content: "{{ join_command.stdout_lines[0] }}"
         dest: ./join-command
       delegate_to: localhost
+      become: false
 
 - name: Add worker nodes to cluster
   hosts: workers
