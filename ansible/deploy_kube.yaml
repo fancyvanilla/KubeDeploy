@@ -173,6 +173,7 @@
     virtual_router_ip: 192.168.19.24
     control_plane_node: "k8s-control-node"
     cloudstack_api_url: "http://192.168.19.10:8080/client/api"
+    ansible_python_interpreter: /usr/bin/python3
   become: true
   tasks:
     - name: Add load balancer rule for the api server
