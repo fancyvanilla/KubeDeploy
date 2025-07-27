@@ -225,6 +225,7 @@
       
     - name: Install Kubernetes network plugin (Weave Net)
       command: kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+      become: false
    
     - name: Restart control plane server
       service:
@@ -239,17 +240,18 @@
       delay: 10           
       until: control_plane_status.rc == 0
       changed_when: false
+      become: false
     
     - name: copy join command to file
       command: kubeadm token create --print-join-command
       register: join_command
+      become: false
 
     - name: save join command to file
       copy:
         content: "{{ join_command.stdout_lines[0] }}"
         dest: ./join-command
       delegate_to: localhost
-      become: false
 
 - name: Add worker nodes to cluster
   hosts: workers
