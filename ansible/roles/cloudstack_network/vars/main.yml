@@ -1,4 +1,5 @@
 network_name: "k8s-network-test"
-vm_zone: "Zone-1"
 network_offering: "DefaultNetworkOfferingforKubernetesService"
 cloudstack_api_url: "http://192.168.19.10:8080/client/api"
+k8s_control_node_ssh_port: 2223
+k8s_worker_node_ssh_port: 2224

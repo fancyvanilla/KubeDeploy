@@ -1,0 +1,68 @@
+- name: Ensure pip3 is installed
+  ansible.builtin.package:
+    name: python3-pip
+    state: present
+  become: true
+
+- name: Install cs Python module
+  ansible.builtin.pip:
+    name: cs
+    executable: pip3
+  become: false
+
+- name: Initialize Kubernetes cluster
+  command: kubeadm init --pod-network-cidr="{{ k8s_pod_network_cidr }}" --cri-socket unix:///var/run/containerd/containerd.sock --control-plane-endpoint="{{ k8s_allocated_ip }}":6443 --apiserver-cert-extra-sans="{{ k8s_allocated_ip }}" --v=5
+  args:
+    creates: /etc/kubernetes/admin.conf
+
+- name: Create .kube directory
+  file:
+    path: "/home/{{ ansible_user }}/.kube"
+    state: directory
+    mode: '0755'
+
+- name: Copy admin.conf to user's kube config
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: "/home/{{ ansible_user }}/.kube/config" 
+    remote_src: yes
+  become: true
+  tags: kubeconfig
+
+- name: Set ownership of kube config file to current user
+  file:
+    path: "/home/{{ ansible_user }}/.kube/config"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+  
+- name: Install Kubernetes network plugin (Weave Net)
+  command: kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+  become: false
+
+- name: Restart control plane server
+  service:
+    name: kubelet
+    state: restarted
+
+- name: Wait until control plane node is Ready
+  shell: |
+    kubectl get nodes --no-headers | grep -E 'control-plane|master' | grep -w "Ready"
+  register: control_plane_status
+  retries: 30           
+  delay: 10           
+  until: control_plane_status.rc == 0
+  changed_when: false
+  become: false
+
+- name: copy join command to file
+  command: kubeadm token create --print-join-command
+  register: join_command
+  become: false
+
+- name: save join command to file
+  copy:
+    content: "{{ join_command.stdout_lines[0] }}"
+    dest: ./join-command
+  delegate_to: localhost
+  become: false

@@ -1,0 +1,34 @@
+- name: Setup cloudstack network and vms
+  hosts: localhost
+  vars:
+    k8s_zone: "Zone-1"
+  vars_files:
+    - vault.yml     # created using the command: ansible-vault create vault.yml
+  roles:
+    - cloudstack_network
+    - cloudstack_vm
+    - cloudstack_access
+
+- name: Setup nodes for k8s
+  hosts: all
+  become: true
+  roles:
+    - k8s_node_setup
+
+- name: Setup k8s on control node
+  hosts: masters
+  become: true
+  roles:
+    - k8s_control_node
+
+- name: Setup cloudstack CCM
+  hosts: masters
+  become: true
+  roles:
+    - cloudstack_ccm
+
+- name: Add worker nodes to cluster
+  hosts: workers
+  become: true
+  roles:
+    - k8s_join

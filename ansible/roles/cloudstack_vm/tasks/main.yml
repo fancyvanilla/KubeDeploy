@@ -10,5 +10,26 @@
     networks: 
       - "{{ k8s_network_name }}"
   loop:
-    - { name: "k8s-control-node-2" }
-    - { name: "k8s-node-2" }
+    - { name: "{{ k8s_control_node }}" }
+    - { name: "{{ k8s_node }}" }
+
+- name: share vm names with other tasks
+  set_fact:
+    k8s_control_node: "{{ k8s_control_node }}"
+    k8s_node: "{{ k8s_node }}"
+
+- name: Register master node in dynamic inventory
+  add_host:
+    name: master
+    groups: masters
+    ansible_host: "{{ k8s_allocated_ip }}"
+    ansible_port: "{{ k8s_control_node_ssh_port }}"
+    ansible_user: ubuntu
+
+- name: Register worker node in dynamic inventory
+  add_host:
+    name: worker2
+    groups: workers
+    ansible_host: "{{ k8s_allocated_ip }}"
+    ansible_port: "{{ k8s_worker_node_ssh_port }}"
+    ansible_user: ubuntu

@@ -1,0 +1,11 @@
+- name: Join worker node to Kubernetes cluster
+  block:
+    - name: copy join command to server
+      copy:
+        src: join-command
+        dest: /tmp/join-command.sh
+        mode: '0755'
+    - name: Execute join command
+      command: bash /tmp/join-command.sh
+      args:
+        creates: /etc/kubernetes/kubelet.conf
