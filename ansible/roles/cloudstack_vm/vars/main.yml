@@ -1,0 +1,8 @@
+vm_template: "Ubuntu-22.04 server template"
+vm_project: "Integration"
+vm_zone: "Zone-1"
+vm_service_offering: "kube-node-offering"
+vm_disk_offering: "PerfPlus Storage"
+vm_disk_size: 20
+vm_networks:
+  - "Server Integration"

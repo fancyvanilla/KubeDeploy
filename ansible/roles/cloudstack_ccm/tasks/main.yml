@@ -16,11 +16,10 @@
     dest: /opt/cloudstack-ccm/cloud-config
     content: |
       [Global]
-      api-url = http://192.168.19.10/client/api
+      api-url = {{ cloudstack_api_url }}
       api-key = {{ cloudstack_api_key }}
       secret-key = {{ cloudstack_api_secret }}
       zone = {{ cloudstack_zone }}
-      network = {{ cloudstack_network }}
     mode: '0644'
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
