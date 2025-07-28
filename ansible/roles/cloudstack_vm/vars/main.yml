@@ -2,6 +2,6 @@ vm_template: "Ubuntu-22.04 server template"
 vm_service_offering: "kube-node-offering"
 vm_disk_offering: "Micro"
 vm_disk_size: 1
-k8s_control_node: "k8s-control-node-2"
-k8s_node: "k8s-node-2"
-k8s_ssh_key: "my-instance-ssh-keys"
+k8s_control_node: "k8s-control-node"
+k8s_node: "k8s-worker-node"
+k8s_ssh_key: "my-instance-ssh-keys" # one SSH key for all nodes not recommended for production but works for testing

@@ -1,2 +1,3 @@
 ansible_user: ubuntu
 k8s_zone: "Zone-1"
+worker_count: 2

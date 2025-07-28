@@ -1,14 +1,21 @@
+- name: Add ssh access for the control node
+  ngine_io.cloudstack.cs_portforward:
+    ip_address: "{{ k8s_allocated_ip }}"
+    zone: "{{ k8s_zone }}"
+    vm: "{{ k8s_control_node }}"
+    public_port: "{{ k8s_control_node_ssh_port }}"
+    private_port: 22
+
 - name: Add ssh access for the control and worker nodes
   ngine_io.cloudstack.cs_portforward:
     ip_address: "{{ k8s_allocated_ip }}"
     zone: "{{ k8s_zone }}"
-    vm: "{{ item.name }}"
-    public_port: "{{ item.ssh_port }}"
+    vm: "{{ k8s_node }}-{{ item }}"
+    public_port: "{{ (k8s_control_node_ssh_port | int) + (item | int) }}"
     private_port: 22
-  loop:
-   - { name: "{{ k8s_control_node }}", ssh_port: "{{ k8s_control_node_ssh_port }}" }
-   - { name: "{{ k8s_node }}", ssh_port: "{{ k8s_worker_node_ssh_port }}" }
-
+  loop: "{{ range(1, worker_count + 1) | list }}"
+  loop_control:
+    label: "{{ k8s_node }}-{{ item }}"
 
 - name: Add load balancer rule for the api server
   ngine_io.cloudstack.cs_loadbalancer_rule:
@@ -18,7 +25,7 @@
     private_port: 6443
     algorithm: roundrobin
 
-- name: add control node to load balancer
+- name: Add control node to load balancer
   ngine_io.cloudstack.cs_loadbalancer_rule_member:
     name: k8s-api-lb-rule
     ip_address: "{{ k8s_allocated_ip }}"
