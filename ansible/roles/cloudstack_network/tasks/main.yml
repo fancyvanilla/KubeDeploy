@@ -14,7 +14,7 @@
       ngine_io.cloudstack.cs_ip_address:
         zone: "{{ vm_zone }}"
         network: k8s-network-test
-        register: allocated_ip
+      register: allocated_ip
     - name: Print ip address
       debug:
         msg: "Allocated IP address: {{ allocated_ip.ip_address }}"
