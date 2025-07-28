@@ -1,0 +1,25 @@
+- name: Set up an isolated network for Kubernetes
+  hosts: localhost
+  block:
+  - name: Create a network
+    ngine_io.cloudstack.cs_network:
+     name: k8s-network-test 
+     zone: "{{ vm_zone }}"
+     network_offering: DefaultIsolatedNetworkOfferingWithSourceNatService
+  - name: Allocate an IP address
+    ngine_io.cloudstack.cs_ip_address:
+      zone: "{{ vm_zone }}"
+      network: k8s-network-test
+      register: allocated_ip
+  - name: Print ip address
+    debug:
+      msg: "Allocated IP address: {{ allocated_ip.ip_address }}"
+  - name: Create a firewall rule for the IP address
+    ngine_io.cloudstack.cs_firewall_rule:
+      zone: "{{ vm_zone }}"
+      ip_address: "{{ allocated_ip.ip_address }}"
+      protocol: tcp
+      start_port: 80
+      end_port: 80
+      cidr: 0.0.0.0/0
+  
