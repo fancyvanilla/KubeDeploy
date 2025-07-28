@@ -3,13 +3,11 @@
     name: "{{ item.name }}"
     template: "{{ vm_template }}"
     hypervisor: VMware
-    project: "{{ vm_project }}"
-    zone: "{{ vm_zone }}"
+    zone: "{{ k8s_zone }}"
     service_offering: "{{ vm_service_offering }}"
     disk_offering: "{{ vm_disk_offering }}"
-    disk_size: "{{ vm_disk_size }}"
-    networks: "{{ vm_networks }}"
+    networks: 
+      - "{{ k8s_network_name }}"
   loop:
     - { name: "k8s-control-node" }
     - { name: "k8s-node" }
-  delegate_to: localhost
