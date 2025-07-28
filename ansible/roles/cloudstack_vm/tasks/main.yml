@@ -6,6 +6,7 @@
     zone: "{{ k8s_zone }}"
     service_offering: "{{ vm_service_offering }}"
     disk_offering: "{{ vm_disk_offering }}"
+    disk_size: "{{ vm_disk_size }}"
     networks: 
       - "{{ k8s_network_name }}"
   loop:

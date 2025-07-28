@@ -1,3 +1,4 @@
 vm_template: "Ubuntu-22.04 server template"
 vm_service_offering: "kube-node-offering"
-vm_disk_offering: "No thanks"
+vm_disk_offering: "Micro"
+vm_disk_size: 0
