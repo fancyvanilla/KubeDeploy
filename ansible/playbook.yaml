@@ -1,7 +1,5 @@
 - name: Setup cloudstack network and vms
   hosts: localhost
-  vars:
-    k8s_zone: "Zone-1"
   vars_files:
     - vault.yml     # created using the command: ansible-vault create vault.yml
   module_defaults:
