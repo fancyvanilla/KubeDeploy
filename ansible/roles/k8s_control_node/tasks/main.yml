@@ -11,7 +11,7 @@
   become: false
 
 - name: Initialize Kubernetes cluster
-  command: kubeadm init --pod-network-cidr="{{ k8s_pod_network_cidr }}" --cri-socket unix:///var/run/containerd/containerd.sock --control-plane-endpoint="{{ k8s_allocated_ip }}":6443 --apiserver-cert-extra-sans="{{ k8s_allocated_ip }}" --v=5
+  command: kubeadm init --pod-network-cidr="{{ k8s_pod_network_cidr }}" --cri-socket unix:///var/run/containerd/containerd.sock --control-plane-endpoint="{{ ansible_host }}:6443" --apiserver-cert-extra-sans="{{ ansible_host }}" --v=5
   args:
     creates: /etc/kubernetes/admin.conf
 
