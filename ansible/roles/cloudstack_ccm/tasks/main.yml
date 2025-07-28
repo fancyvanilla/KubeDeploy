@@ -25,7 +25,6 @@
     group: "{{ ansible_user }}"
 
 - name: Create secret for cloud-config
-  become: false
   shell: |
     kubectl -n kube-system create secret generic cloudstack-secret \
       --from-file=cloud-config=/opt/cloudstack-ccm/cloud-config \

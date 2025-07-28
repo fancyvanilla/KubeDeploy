@@ -28,7 +28,6 @@
   hosts: masters
   vars_files:
     - vault.yml  
-  become: true
   roles:
     - cloudstack_ccm
 
