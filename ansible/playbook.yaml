@@ -4,6 +4,11 @@
     k8s_zone: "Zone-1"
   vars_files:
     - vault.yml     # created using the command: ansible-vault create vault.yml
+  module_defaults:
+    group/ngine_io.cloudstack.cloudstack:
+      api_key: "{{ cloudstack_api_key }}"
+      api_secret: "{{ cloudstack_api_secret }}"
+      api_url: "{{ cloudstack_api_url }}"
   roles:
     - cloudstack_network
     - cloudstack_vm

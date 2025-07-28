@@ -1,39 +1,32 @@
-- name: Create an isolated network for Kubernetes
-  module_defaults:
-    group/ngine_io.cloudstack.cloudstack:
-      api_key: "{{ cloudstack_api_key }}"
-      api_secret: "{{ cloudstack_api_secret }}"
-      api_url: "{{ cloudstack_api_url }}"
-  block:
-    - name: Create a network
-      ngine_io.cloudstack.cs_network:
-        name: "{{ network_name }}"
-        zone: "{{ k8s_zone }}"
-        network_offering: "{{ network_offering }}"
-    - name: Allocate a public IP address
-      ngine_io.cloudstack.cs_ip_address:
-        zone: "{{ k8s_zone }}"
-        network: "{{ network_name }}"
-      register: allocated_ip
-    - name: Print ip address
-      debug:
-        msg: "Allocated IP address: {{ allocated_ip.ip_address }}"
-    - name: Create firewall rules for the IP address
-      ngine_io.cloudstack.cs_firewall:
-        zone: "{{ k8s_zone }}"
-        ip_address: "{{ allocated_ip.ip_address }}"
-        protocol: tcp
-        start_port: "{{ item }}"
-        end_port: "{{ item }}"
-        cidr: 0.0.0.0/0
-      loop:
-        - 6443
-        - "{{ k8s_control_node_ssh_port }}"
-        - "{{ k8s_worker_node_ssh_port }}"
-      when: allocated_ip.ip_address is defined
-    - name: Set network facts for other roles
-      set_fact:
-        k8s_network_name: "{{ network_name }}"
-        k8s_allocated_ip: "{{ allocated_ip.ip_address }}"
-        k8s_control_node_ssh_port: "{{ k8s_control_node_ssh_port }}"
-        k8s_worker_node_ssh_port: "{{ k8s_worker_node_ssh_port }}"
+- name: Create a network
+  ngine_io.cloudstack.cs_network:
+    name: "{{ network_name }}"
+    zone: "{{ k8s_zone }}"
+    network_offering: "{{ network_offering }}"
+- name: Allocate a public IP address
+  ngine_io.cloudstack.cs_ip_address:
+    zone: "{{ k8s_zone }}"
+    network: "{{ network_name }}"
+  register: allocated_ip
+- name: Print ip address
+  debug:
+    msg: "Allocated IP address: {{ allocated_ip.ip_address }}"
+- name: Create firewall rules for the IP address
+  ngine_io.cloudstack.cs_firewall:
+    zone: "{{ k8s_zone }}"
+    ip_address: "{{ allocated_ip.ip_address }}"
+    protocol: tcp
+    start_port: "{{ item }}"
+    end_port: "{{ item }}"
+    cidr: 0.0.0.0/0
+  loop:
+    - 6443
+    - "{{ k8s_control_node_ssh_port }}"
+    - "{{ k8s_worker_node_ssh_port }}"
+  when: allocated_ip.ip_address is defined
+- name: Set network facts for other roles
+  set_fact:
+    k8s_network_name: "{{ network_name }}"
+    k8s_allocated_ip: "{{ allocated_ip.ip_address }}"
+    k8s_control_node_ssh_port: "{{ k8s_control_node_ssh_port }}"
+    k8s_worker_node_ssh_port: "{{ k8s_worker_node_ssh_port }}"
