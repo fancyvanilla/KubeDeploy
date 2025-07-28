@@ -7,13 +7,14 @@
   block:
     - name: Create a network
       ngine_io.cloudstack.cs_network:
-        name: k8s-network-test 
+        name: "{{ network_name }}"
         zone: "{{ vm_zone }}"
-        network_offering: DefaultIsolatedNetworkOfferingWithSourceNatService
+        network_offering: "{{ network_offering }}"
+      register: network_result
     - name: Allocate an IP address
       ngine_io.cloudstack.cs_ip_address:
         zone: "{{ vm_zone }}"
-        network: k8s-network-test
+        network: "{{ network_name }}"
       register: allocated_ip
     - name: Print ip address
       debug:
@@ -26,3 +27,8 @@
         start_port: 80
         end_port: 80
         cidr: 0.0.0.0/0
+    - name: Set network facts for other roles
+      set_fact:
+        k8s_network_id: "{{ network_result.id }}"
+        k8s_network_name: "{{ network_name }}"
+        k8s_allocated_ip: "{{ allocated_ip.ip_address }}"
