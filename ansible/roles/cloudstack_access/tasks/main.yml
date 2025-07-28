@@ -21,4 +21,5 @@
 - name: add control node to load balancer
   ngine_io.cloudstack.cs_loadbalancer_rule_member:
     name: k8s-api-lb-rule
+    ip_address: "{{ k8s_allocated_ip }}"
     vms: "{{ k8s_control_node }}"

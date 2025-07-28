@@ -9,6 +9,7 @@
     disk_size: "{{ vm_disk_size }}"
     networks: 
       - "{{ k8s_network_name }}"
+    ssh_key: "{{ k8s_ssh_key }}"
   loop:
     - { name: "{{ k8s_control_node }}" }
     - { name: "{{ k8s_node }}" }

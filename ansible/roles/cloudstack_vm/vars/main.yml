@@ -4,3 +4,4 @@ vm_disk_offering: "Micro"
 vm_disk_size: 1
 k8s_control_node: "k8s-control-node-2"
 k8s_node: "k8s-node-2"
+k8s_ssh_key: "my-instance-ssh-keys"
