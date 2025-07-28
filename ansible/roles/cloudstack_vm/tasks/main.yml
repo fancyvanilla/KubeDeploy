@@ -9,5 +9,5 @@
     networks: 
       - "{{ k8s_network_name }}"
   loop:
-    - { name: "k8s-control-node" }
-    - { name: "k8s-node" }
+    - { name: "k8s-control-node-2" }
+    - { name: "k8s-node-2" }
