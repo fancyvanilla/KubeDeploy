@@ -19,7 +19,7 @@
       debug:
         msg: "Allocated IP address: {{ allocated_ip.ip_address }}"
     - name: Create a firewall rule for the IP address
-      ngine_io.cloudstack.cs_firewall_rule:
+      ngine_io.cloudstack.cs_firewall:
         zone: "{{ vm_zone }}"
         ip_address: "{{ allocated_ip.ip_address }}"
         protocol: tcp
