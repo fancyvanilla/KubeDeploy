@@ -1,16 +1,18 @@
-- name: Create a cloudstack vm
+- name: Create a CloudStack VM
   hosts: localhost
+  gather_facts: false
   module_defaults:
     group/ngine_io.cloudstack.cloudstack:
       api_key: "{{ cloudstack_api_key }}"
       api_secret: "{{ cloudstack_api_secret }}"
       api_url: "{{ cloudstack_api_url }}"
   tasks:
-    - include_role:
-      name: cloudstack_vm
-      tasks_from: create_vm.yml
+    - name: Create VM using cloudstack_vm role
+      include_role:
+        name: cloudstack_vm
+        tasks_from: create_vm.yml
       vars:
-        vm_name: "{{ k8s_autoscale_worker}}"
+        vm_name: "{{ k8s_autoscale_worker }}"
         inventory_name: "worker"
         inventory_group: "workers"
         vm_ip: "{{ k8s_allocated_ip }}"
@@ -18,19 +20,23 @@
         vm_service_offering: "{{ vm_worker_service_offering }}"
         vm_network_name: "{{ k8s_network_name }}"
 
-- name: Set up the vm for k8s
+- name: Set up the VM for Kubernetes
   hosts: workers
   become: true
   roles:
     - k8s_node_setup
-- name: generate join command for k8s
+
+- name: Generate join command on the master
   hosts: masters
   become: true
-  roles:
-    - k8s_control_node
-  include_tasks: command.yml
-- name: Join worker nodes to k8s cluster
+  tasks:
+    - name: Run command task from k8s_control_node role
+      import_role:
+        name: k8s_control_node
+        tasks_from: command.yml
+
+- name: Join worker nodes to the Kubernetes cluster
   hosts: workers
-  become: true 
+  become: true
   roles:
     - k8s_worker_node
