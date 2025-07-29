@@ -1,5 +1,4 @@
----
-- name: Create VM {{ vm_name }}
+- name: Create VM "{{ vm_name }}""
   ngine_io.cloudstack.cs_instance:
     name: "{{ vm_name }}"
     template: "{{ vm_template }}"
@@ -12,7 +11,7 @@
       - "{{ vm_network_name }}"
     ssh_key: "{{ k8s_ssh_key }}"
 
-- name: Register VM {{ vm_name }} in dynamic inventory
+- name: Register VM "{{ vm_name }}" in dynamic inventory
   add_host:
     name: "{{ inventory_name }}"
     groups: "{{ inventory_group }}"
