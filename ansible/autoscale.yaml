@@ -39,4 +39,4 @@
   hosts: workers
   become: true
   roles:
-    - k8s_worker_node
+    - k8s_join
