@@ -1,0 +1,8 @@
+- name: Create a firewall rule for "{{ vm_name }}" SSH access
+  ngine_io.cloudstack.cs_firewall:
+    zone: "{{ vm_zone }}"
+    ip_address: "{{ vm_ip }}"
+    protocol: tcp
+    start_port: "{{ vm_ssh_port }}"
+    end_port: "{{ vm_ssh_port }}"
+    cidr: 0.0.0.0/0

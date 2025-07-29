@@ -1,7 +1,8 @@
 - name: Setup cloudstack network and vms
   hosts: localhost
   vars_files:
-    - vault.yml     # created using the command: ansible-vault create vault.yml to store cloudstack credentials
+    - vault.yml # created using the command: ansible-vault create vault.yml to store cloudstack credentials
+    - vars/deploy.yml     
   module_defaults:
     group/ngine_io.cloudstack.cloudstack:
       api_key: "{{ cloudstack_api_key }}"

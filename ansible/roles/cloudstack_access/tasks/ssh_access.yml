@@ -1,0 +1,7 @@
+- name: Add ssh access to "{{ vm_name }}"
+  ngine_io.cloudstack.cs_portforward:
+    ip_address: "{{ vm_ip }}"
+    zone: "{{ vm_zone }}"
+    vm: "{{ vm_name}}"
+    public_port: "{{ vm_ssh_port }}"
+    private_port: 22

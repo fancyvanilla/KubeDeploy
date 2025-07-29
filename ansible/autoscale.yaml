@@ -4,6 +4,12 @@
   vars_files:
     - vault.yml
     - vars/autoscale.yml
+  vars:
+    vm_name: "{{ k8s_autoscale_worker }}"
+    vm_zone: "{{ k8s_zone }}"
+    vm_ip: "{{ k8s_allocated_ip }}"
+    vm_ssh_port: "{{ k8s_worker_ssh_port }}"
+
   module_defaults:
     group/ngine_io.cloudstack.cloudstack:
       api_key: "{{ cloudstack_api_key }}"
@@ -15,14 +21,21 @@
         name: cloudstack_vm
         tasks_from: create_vm.yml
       vars:
-        vm_name: "{{ k8s_autoscale_worker }}"
-        vm_zone: "{{ k8s_zone }}"
         inventory_name: "worker"
         inventory_group: "workers"
-        vm_ip: "{{ k8s_allocated_ip }}"
-        vm_ssh_port: "{{ k8s_worker_ssh_port }}"
         vm_service_offering: "{{ vm_worker_service_offering }}"
         vm_network_name: "{{ k8s_network_name }}"
+        
+    - name: Add firewall rule for SSH access
+      include_role:
+        name: cloudstack_network
+        tasks_from: add_firewall_rule.yml
+
+    - name: Add SSH access to the VM
+      include_role:
+        name: cloudstack_access
+        tasks_from: ssh_access.yml
+
 
 - name: Set up the VM for Kubernetes
   hosts: workers
