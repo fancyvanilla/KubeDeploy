@@ -17,3 +17,4 @@
     groups: "{{ inventory_group }}"
     ansible_host: "{{ vm_ip }}"
     ansible_port: "{{ vm_ssh_port }}"
+    ansible_user: "{{ ansible_user }}"
