@@ -1,5 +1,6 @@
 vm_template: "Ubuntu-22.04 server template"
-vm_service_offering: "kube-node-offering"
+vm_control_service_offering: "kube-node-offering"
+vm_worker_service_offering: "k8s-worker-node-offering"
 vm_disk_offering: "Micro"
 vm_disk_size: 1
 k8s_control_node: "k8s-control-node"

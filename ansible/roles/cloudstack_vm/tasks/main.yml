@@ -4,7 +4,7 @@
     template: "{{ vm_template }}"
     hypervisor: VMware
     zone: "{{ k8s_zone }}"
-    service_offering: "{{ vm_service_offering }}"
+    service_offering: "{{ vm_control_service_offering }}"
     disk_offering: "{{ vm_disk_offering }}"
     disk_size: "{{ vm_disk_size }}"
     networks: 
@@ -17,7 +17,7 @@
     template: "{{ vm_template }}"
     hypervisor: VMware
     zone: "{{ k8s_zone }}"
-    service_offering: "{{ vm_service_offering }}"
+    service_offering: "{{ vm_worker_service_offering }}"
     disk_offering: "{{ vm_disk_offering }}"
     disk_size: "{{ vm_disk_size }}"
     networks: 
