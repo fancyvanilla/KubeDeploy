@@ -1,6 +1,8 @@
 - name: Create a CloudStack VM
   hosts: localhost
   gather_facts: false
+  vars_files:
+    - vault.yml 
   module_defaults:
     group/ngine_io.cloudstack.cloudstack:
       api_key: "{{ cloudstack_api_key }}"
