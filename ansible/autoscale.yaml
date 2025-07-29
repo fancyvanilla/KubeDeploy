@@ -1,5 +1,10 @@
 - name: Create a cloudstack vm
   hosts: localhost
+  module_defaults:
+    group/ngine_io.cloudstack.cloudstack:
+      api_key: "{{ cloudstack_api_key }}"
+      api_secret: "{{ cloudstack_api_secret }}"
+      api_url: "{{ cloudstack_api_url }}"
   tasks:
     - include_role:
       name: cloudstack_vm
