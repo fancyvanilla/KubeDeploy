@@ -25,7 +25,7 @@
         inventory_group: "workers"
         vm_service_offering: "{{ vm_worker_service_offering }}"
         vm_network_name: "{{ k8s_network_name }}"
-        
+
     - name: Add firewall rule for SSH access
       include_role:
         name: cloudstack_network
@@ -35,6 +35,14 @@
       include_role:
         name: cloudstack_access
         tasks_from: ssh_access.yml
+  
+    - name: Wait for VM to be ready
+      wait_for:
+        host: "{{ vm_ip }}"
+        port: "{{ vm_ssh_port }}"
+        delay: 10
+        timeout: 300
+        state: started
 
 
 - name: Set up the VM for Kubernetes
