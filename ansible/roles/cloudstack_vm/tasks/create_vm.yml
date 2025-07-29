@@ -1,0 +1,20 @@
+---
+- name: Create VM {{ vm_name }}
+  ngine_io.cloudstack.cs_instance:
+    name: "{{ vm_name }}"
+    template: "{{ vm_template }}"
+    hypervisor: VMware
+    zone: "{{ vm_zone }}"
+    service_offering: "{{ vm_service_offering }}"
+    disk_offering: "{{ vm_disk_offering }}"
+    disk_size: "{{ vm_disk_size }}"
+    networks:
+      - "{{ vm_network_name }}"
+    ssh_key: "{{ k8s_ssh_key }}"
+
+- name: Register VM {{ vm_name }} in dynamic inventory
+  add_host:
+    name: "{{ inventory_name }}"
+    groups: "{{ inventory_group }}"
+    ansible_host: "{{ vm_ip }}"
+    ansible_port: "{{ vm_ssh_port }}"

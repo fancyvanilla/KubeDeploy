@@ -55,14 +55,4 @@
   changed_when: false
   become: false
 
-- name: copy join command to file
-  command: kubeadm token create --print-join-command
-  register: join_command
-  become: false
-
-- name: save join command to file
-  copy:
-    content: "{{ join_command.stdout_lines[0] }}"
-    dest: ./join-command
-  delegate_to: localhost
-  become: false
+- import_tasks: command.yml

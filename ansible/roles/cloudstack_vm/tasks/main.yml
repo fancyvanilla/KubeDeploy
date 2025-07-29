@@ -1,51 +1,81 @@
-- name: Create control VM for Kubernetes cluster
-  ngine_io.cloudstack.cs_instance:
-    name: "{{ k8s_control_node }}"
-    template: "{{ vm_template }}"
-    hypervisor: VMware
-    zone: "{{ k8s_zone }}"
-    service_offering: "{{ vm_control_service_offering }}"
-    disk_offering: "{{ vm_disk_offering }}"
-    disk_size: "{{ vm_disk_size }}"
-    networks: 
-      - "{{ k8s_network_name }}"
-    ssh_key: "{{ k8s_ssh_key }}" 
+- name: Create the control node for k8s
+  include_tasks: create_vm.yml
+  vars:
+    vm_name: "{{ k8s_control_node }}"
+    inventory_name: "master"
+    inventory_group: "masters"
+    vm_ip: "{{ k8s_allocated_ip }}"
+    vm_ssh_port: "{{ k8s_control_node_ssh_port }}"
+    vm_service_offering: "{{ vm_control_service_offering }}"
 
-- name: Create worker VMs for Kubernetes cluster
-  ngine_io.cloudstack.cs_instance:
-    name: "{{ k8s_node }}-{{ item }}"
-    template: "{{ vm_template }}"
-    hypervisor: VMware
-    zone: "{{ k8s_zone }}"
-    service_offering: "{{ vm_worker_service_offering }}"
-    disk_offering: "{{ vm_disk_offering }}"
-    disk_size: "{{ vm_disk_size }}"
-    networks: 
-      - "{{ k8s_network_name }}"
-    ssh_key: "{{ k8s_ssh_key }}" 
+- name: Create worker nodes for k8s
+  include_tasks: create_vm.yml
   loop: "{{ range(1, worker_count + 1) | list }}"
   loop_control:
     label: "{{ k8s_node }}-{{ item }}"
+  vars:
+    vm_name: "{{ k8s_node }}-{{ item }}"
+    inventory_name: "worker{{ item }}"
+    inventory_group: "workers"
+    vm_ip: "{{ k8s_allocated_ip }}"
+    vm_ssh_port: "{{ (k8s_control_node_ssh_port | int) + (item | int) }}"
+    vm_service_offering: "{{ vm_worker_service_offering }}"
 
-- name: share vm names with other tasks
+- name: Share vm names with other tasks
   set_fact:
     k8s_control_node: "{{ k8s_control_node }}"
     k8s_node: "{{ k8s_node }}" # worker nodes will be named k8s-worker-node-1, k8s-worker-node-2, etc.
 
-- name: Register master node in dynamic inventory
-  add_host:
-    name: master
-    groups: masters
-    ansible_host: "{{ k8s_allocated_ip }}"
-    ansible_port: "{{ k8s_control_node_ssh_port }}"
+
+
+# - name: Create control VM for Kubernetes cluster
+#   ngine_io.cloudstack.cs_instance:
+#     name: "{{ k8s_control_node }}"
+#     template: "{{ vm_template }}"
+#     hypervisor: VMware
+#     zone: "{{ k8s_zone }}"
+#     service_offering: "{{ vm_control_service_offering }}"
+#     disk_offering: "{{ vm_disk_offering }}"
+#     disk_size: "{{ vm_disk_size }}"
+#     networks: 
+#       - "{{ k8s_network_name }}"
+#     ssh_key: "{{ k8s_ssh_key }}" 
+
+# - name: Create worker VMs for Kubernetes cluster
+#   ngine_io.cloudstack.cs_instance:
+#     name: "{{ k8s_node }}-{{ item }}"
+#     template: "{{ vm_template }}"
+#     hypervisor: VMware
+#     zone: "{{ k8s_zone }}"
+#     service_offering: "{{ vm_worker_service_offering }}"
+#     disk_offering: "{{ vm_disk_offering }}"
+#     disk_size: "{{ vm_disk_size }}"
+#     networks: 
+#       - "{{ k8s_network_name }}"
+#     ssh_key: "{{ k8s_ssh_key }}" 
+#   loop: "{{ range(1, worker_count + 1) | list }}"
+#   loop_control:
+#     label: "{{ k8s_node }}-{{ item }}"
+
+# - name: Share vm names with other tasks
+#   set_fact:
+#     k8s_control_node: "{{ k8s_control_node }}"
+#     k8s_node: "{{ k8s_node }}" # worker nodes will be named k8s-worker-node-1, k8s-worker-node-2, etc.
+
+# - name: Register master node in dynamic inventory
+#   add_host:
+#     name: master
+#     groups: masters
+#     ansible_host: "{{ k8s_allocated_ip }}"
+#     ansible_port: "{{ k8s_control_node_ssh_port }}"
   
-- name: Register worker nodes in dynamic inventory
-  add_host:
-    name: worker{{ item }}
-    groups: workers
-    ansible_host: "{{ k8s_allocated_ip }}"
-    ansible_port: "{{ (k8s_control_node_ssh_port | int) + (item | int) }}"
-  loop: "{{ range(1, worker_count + 1) | list }}"
-  loop_control:
-    label: "{{ k8s_node }}-{{ item }}"
+# - name: Register worker nodes in dynamic inventory
+#   add_host:
+#     name: worker{{ item }}
+#     groups: workers
+#     ansible_host: "{{ k8s_allocated_ip }}"
+#     ansible_port: "{{ (k8s_control_node_ssh_port | int) + (item | int) }}"
+#   loop: "{{ range(1, worker_count + 1) | list }}"
+#   loop_control:
+#     label: "{{ k8s_node }}-{{ item }}"
 

@@ -1,0 +1,31 @@
+- name: Create a cloudstack vm
+  hosts: localhost
+  tasks:
+    - include_role:
+      name: cloudstack_vm
+      tasks_from: create_vm.yml
+      vars:
+        vm_name: "{{ k8s_autoscale_worker}}"
+        inventory_name: "worker"
+        inventory_group: "workers"
+        vm_ip: "{{ k8s_allocated_ip }}"
+        vm_ssh_port: "{{ k8s_worker_ssh_port }}"
+        vm_service_offering: "{{ vm_worker_service_offering }}"
+        vm_network_name: "{{ k8s_network_name }}"
+
+- name: Set up the vm for k8s
+  hosts: workers
+  become: true
+  roles:
+    - k8s_node_setup
+- name: generate join command for k8s
+  hosts: masters
+  become: true
+  roles:
+    - k8s_control_node
+  include_tasks: command.yml
+- name: Join worker nodes to k8s cluster
+  hosts: workers
+  become: true 
+  roles:
+    - k8s_worker_node
