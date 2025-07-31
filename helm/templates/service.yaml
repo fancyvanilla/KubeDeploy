@@ -5,6 +5,7 @@ metadata:
   labels:
     app: my-service
 spec:
+  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 80
