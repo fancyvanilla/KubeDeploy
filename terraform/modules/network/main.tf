@@ -1,7 +1,7 @@
 terraform {
     required_providers {
         cloudstack = {
-            source  = "shapeblue/cloudstack"
+            source  = "cloudstack/cloudstack"
             version = "0.5.0"
         }
     }
@@ -13,9 +13,11 @@ resource "cloudstack_network" "default" {
   zone             = var.zone
 }
 resource "cloudstack_ipaddress" "default" {
+  depends_on = [cloudstack_network.default]
   network_id = cloudstack_network.default.id
 }
 resource "cloudstack_firewall" "default" {
+  depends_on = [cloudstack_ipaddress.default]
   ip_address_id = cloudstack_ipaddress.default.id
 
   rule {

@@ -1,7 +1,7 @@
 terraform {
     required_providers {
         cloudstack = {
-            source  = "shapeblue/cloudstack"
+            source  = "cloudstack/cloudstack"
             version = "0.5.0"
         }
     }
@@ -28,6 +28,7 @@ module "compute" {
   providers = {
     cloudstack = cloudstack
   }
+  
   source = "./modules/compute"
   zone   = var.zone
   worker_count = var.worker_count
@@ -39,4 +40,6 @@ module "compute" {
   ip_address_id = module.network.ip_address_id
   template = var.template
   keypair = var.keypair
+
+  depends_on = [module.network]
 }

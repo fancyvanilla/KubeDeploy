@@ -1,7 +1,7 @@
 terraform {
     required_providers {
         cloudstack = {
-            source  = "shapeblue/cloudstack"
+            source  = "cloudstack/cloudstack"
             version = "0.5.0"
         }
     }
@@ -13,6 +13,7 @@ resource "cloudstack_instance" "control_node" {
   template         = var.template
   zone             = var.zone
   keypair          = var.keypair
+  expunge          = "true"
 }
 resource "cloudstack_instance" "worker_nodes" {
   count            = var.worker_count
@@ -22,6 +23,7 @@ resource "cloudstack_instance" "worker_nodes" {
   template         = var.template
   zone             = var.zone
   keypair          = var.keypair
+  expunge          = "true"
 }
 
 resource "cloudstack_port_forward" "ssh_access_control_node" {
