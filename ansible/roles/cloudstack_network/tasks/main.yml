@@ -31,9 +31,6 @@
     start_port: "{{ k8s_control_node_ssh_port }}"
     end_port: "{{ (k8s_control_node_ssh_port | int) + (worker_count | int) }}"
     cidr: 0.0.0.0/0
-  loop: "{{ range(1, worker_count + 1) | list }}"
-  loop_control:
-    label: "{{ k8s_node }}-{{ item }}"
   when: allocated_ip.ip_address is defined
 
 - name: Set network facts for other roles
