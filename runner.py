@@ -27,11 +27,12 @@ if __name__ == "__main__":
      file_path = os.path.join(path, './terraform/modules/network/vars.json')
      destination_file = os.path.join(path, './ansible/inventory.ini')
      playbook_path = os.path.join(path, './ansible/deploy_k8s_v2.yaml')
-     subprocess.run(["terraform", "init"], check=True)
-     subprocess.run(["terraform", "apply", "-auto-approve"], check=True)
+     terraform_path = os.path.join(path, './terraform')
+     subprocess.run(["terraform", "init"], check=True, cwd=terraform_path)
+     subprocess.run(["terraform", "apply", "-auto-approve"], check=True, cwd=terraform_path)
      try:
          parse_vars(file_path, destination_file)
          print(f"Inventory file created at {destination_file}")
-         subprocess.run(["ansible-playbook", "-i", destination_file, playbook_path,"--ask-vault-pass"], check=True)
+         subprocess.run(["ansible-playbook", "-i", destination_file, playbook_path, "--ask-vault-pass"], check=True)
      except Exception as e:
          print(f"Error occurred: {e}")
