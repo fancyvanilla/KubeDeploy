@@ -12,6 +12,7 @@ resource "cloudstack_instance" "control_node" {
   network_id       = var.network_id
   template         = var.template
   zone             = var.zone
+  keypair          = var.keypair
 }
 resource "cloudstack_instance" "worker_nodes" {
   count            = var.worker_count
