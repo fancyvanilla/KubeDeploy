@@ -1,11 +1,3 @@
-# - name: Add ssh access for the control node
-#   ngine_io.cloudstack.cs_portforward:
-#     ip_address: "{{ k8s_allocated_ip }}"
-#     zone: "{{ k8s_zone }}"
-#     vm: "{{ k8s_control_node }}"
-#     public_port: "{{ k8s_control_node_ssh_port }}"
-#     private_port: 22
-
 - name: Add ssh access for control node
   include_tasks: ssh_access.yml
   vars:
@@ -24,18 +16,6 @@
   loop: "{{ range(1, worker_count + 1) | list }}"
   loop_control:
     label: "{{ k8s_node }}-{{ item }}"
-
-
-# - name: Add ssh access for the control and worker nodes
-#   ngine_io.cloudstack.cs_portforward:
-#     ip_address: "{{ k8s_allocated_ip }}"
-#     zone: "{{ k8s_zone }}"
-#     vm: "{{ k8s_node }}-{{ item }}"
-#     public_port: "{{ (k8s_control_node_ssh_port | int) + (item | int) }}"
-#     private_port: 22
-#   loop: "{{ range(1, worker_count + 1) | list }}"
-#   loop_control:
-#     label: "{{ k8s_node }}-{{ item }}"
 
 - name: Add load balancer rule for the api server
   ngine_io.cloudstack.cs_loadbalancer_rule:
