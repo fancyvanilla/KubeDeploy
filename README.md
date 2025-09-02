@@ -3,7 +3,7 @@
 This repository automates the **provisioning, configuration, and deployment of a Kubernetes cluster** on a private cloud (CloudStack) using **Terraform**, **Ansible**, and a lightweight **Go server**.   
 
 <img width="2048" height="929" alt="image" src="https://github.com/user-attachments/assets/4c8b2a37-6359-4e36-8f98-610c4a54ecd3" />
-The diagram above illustrates how infra and config automation pair with a full stack application on Kubernetes (you can find the full application in [this repository](https://github.com/fancyvanilla/ResumeBuilder)).
+The diagram above illustrates how infra and config automation pair with a full stack application on Kubernetes (you can find the full application in this repository (https://github.com/fancyvanilla/ResumeBuilder)).
 
 ---
 ## ⚙️ Components  
