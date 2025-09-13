@@ -24,7 +24,7 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(response)
 }
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-	response := Response{Message: "Hello, World!"}
+	response := Response{Message: "Hello, kube!"}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
